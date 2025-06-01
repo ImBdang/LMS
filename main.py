@@ -1,13 +1,17 @@
 from request_handle.login import Login
+from request_handle.user import User
 
 def main():
     login = Login()
     tokens = login.login()
     if tokens:
-        access_token = tokens.get("access_token")
-        refresh_token = tokens.get("refresh_token")
+        print("Preparing profile...")
+
+        user = User(tokens)
+        user.get_profile()
+        user.get_class()
     else:
         return
-    
+
 
 main()

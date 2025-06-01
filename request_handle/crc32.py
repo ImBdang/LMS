@@ -25,12 +25,11 @@ def generate_x_request_signature(
         signature_input = body_string + x_app_id + formatted_date_part
         return calculate_crc32(signature_input)
 
-def return_signature(method, url, body):
+def return_signature(method, body):
     load_dotenv()
     X_APP_ID = os.getenv("x-app-id")
     REQUEST_DATA = {
         "method": method.upper(),
-        "url": url,
         "body": body
     }
     calculated_signature = generate_x_request_signature(

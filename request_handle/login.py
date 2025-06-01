@@ -12,24 +12,31 @@ class Login:
         self.x_app_id = os.getenv("x-app-id")
         self.domain = os.getenv("domain")
         self.host = os.getenv("host")
+        self.sec_ch_ua = os.getenv("sec-ch-ua")
+        self.sec_ch_ua_mobile = os.getenv("sec-ch-ua-mobile")
+        self.sec_ch_ua_platform = os.getenv("sec-ch-ua-platform")
+        self.sec_fetch_dest = os.getenv("sec-fetch-dest")
+        self.sec_fetch_mode = os.getenv("sec-fetch-mode")
+        self.sec_fetch_site = os.getenv("sec-fetch-site")
+        self.user_agent = os.getenv("user-agent")
         self.head = {
-            "accept": "application/json, text/plain, */*",
-            "accept-encoding": "gzip, deflate, br, zstd",
-            "accept-language": "en-US,en;q=0.9",
-            "authorization": "", 
-            "content-type": "application/json",
-            "host": self.host,
-            "origin": self.domain,
-            "referer": self.domain + "/",
-            "sec-ch-ua": '"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"',
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": '"Linux"',
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-site",
-            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36",
-            "x-app-id": self.x_app_id,
-            "x-request-signature": ""
+            "Accept": "application/json, text/plain, */*",
+            "Accept-Encoding": "gzip, deflate, br, zstd",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Authorization": "", 
+            "Content-Type": "application/json",
+            "Host": self.host,
+            "Origin": self.domain,
+            "Referer": self.domain + "/",
+            "Sec-Ch-Ua": self.sec_ch_ua,
+            "Sec-Ch-Ua-Mobile": self.sec_ch_ua_mobile,
+            "Sec-Ch-Ua-Platform": self.sec_ch_ua_platform,
+            "Sec-Fetch-Dest": self.sec_fetch_dest,
+            "Sec-Fetch-Mode": self.sec_fetch_mode,
+            "Sec-Fetch-Site": self.sec_fetch_site,
+            "User-Agent": self.user_agent,
+            "X-App-Id": self.x_app_id,
+            "X-Request-Signature": ""
         }
     
     def login(self):
@@ -42,7 +49,6 @@ class Login:
    
         self.head["x-request-signature"] = return_signature(
             method="POST",
-            url=self.url_login,
             body=self.body
         )
         response = requests.post(
@@ -68,7 +74,7 @@ class Login:
                 print("Not found tokens in response")
                 return None
         else:
-            print("Request failed!")
+            print("Request failed")
             print(f"Status Code: {response.status_code}")
             print(f"Response: {response.text}")
     
