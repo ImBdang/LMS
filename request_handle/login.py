@@ -40,42 +40,45 @@ class Login:
         }
     
     def login(self):
-        self.username = input("Tai khoan: ")
-        self.password = getpass.getpass("Mat khau: ")
-        self.body = {
-            "username": self.username,
-            "password": self.password
-        }
-   
-        self.head["x-request-signature"] = return_signature(
-            method="POST",
-            body=self.body
-        )
-        response = requests.post(
-            url=self.url_login,
-            json=self.body,
-            headers=self.head
-        )
-  
-        if response.status_code == 200:
-            print("Request succesfully!")
-            response_data = response.json()
-            print(response_data.get("message"))
-            access_token = response_data.get("access_token")
-            refresh_token = response_data.get("refresh_token")
-            if access_token and refresh_token:
-                print("Token has been received")
-                token = {
-                    "access_token": access_token,
-                    "refresh_token": refresh_token
-                }
-                return token
-            else:
-                print("Not found tokens in response")
-                return None
-        else:
-            print("Request failed")
-            print(f"Status Code: {response.status_code}")
-            print(f"Response: {response.text}")
+        while True:
+            self.username = input("Tai khoan: ")
+            self.password = getpass.getpass("Mat khau: ")
+            self.body = {
+                "username": self.username,
+                "password": self.password
+            }
     
+            self.head["x-request-signature"] = return_signature(
+                method="POST",
+                body=self.body
+            )
+            response = requests.post(
+                url=self.url_login,
+                json=self.body,
+                headers=self.head
+            )
+    
+            if response.status_code == 200:
+                print("Request succesfully!")
+                response_data = response.json()
+                print(response_data.get("message"))
+                access_token = response_data.get("access_token")
+                refresh_token = response_data.get("refresh_token")
+                if access_token and refresh_token:
+                    print("Token has been received")
+                    token = {
+                        "access_token": access_token,
+                        "refresh_token": refresh_token
+                    }
+                    return token
+                else:
+                    print("Not found tokens in response")
+            else:
+                print("Request failed")
+                print(f"Status Code: {response.status_code}")
+                response_data = response.json()
+                print(f'Response: {response_data.get("message")}')
+                if response_data.get("message") == "Wrong password.":
+                    print("Tai khoan hoac mat khau khong dung, vui long nhap lai\n")
+        
 

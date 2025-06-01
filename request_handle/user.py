@@ -108,8 +108,7 @@ class User:
             if res.status_code == 200:
                 res_data = res.json()
                 self.courses = res_data.get("data")
-                # for course in self.courses:
-                #     print(course.get("name"))
+        
             else:
                 print(f"Error: {res.status_code} - {res.text}")
                 return
@@ -118,5 +117,8 @@ class User:
             print(f"Error: {response.status_code} - {response.text}")
             return
 
+    def get_courses(self):
+        coures = self.courses
+        return coures
 
     
