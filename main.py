@@ -3,6 +3,7 @@ from request_handle.user import User
 from request_handle.lms import LMS
 
 def main():
+    print("Welcome to the LMS CLI!\n")
     login = Login()
     tokens = login.login()
     if tokens:
