@@ -6,6 +6,8 @@ import os
 class LMS:
     def __init__(self, user):
         load_dotenv()
+        self.sysname = os.name
+        self.clear_command = "cls" if self.sysname == "nt" else "clear"
         self.class_plan_url = os.getenv("class-plan-url")
         self.user = user
         self.courses = user.get_courses()
@@ -53,21 +55,26 @@ class LMS:
         isAble = False
         yourCourse = None
         while True:
+            os.system(self.clear_command)
             print("\nNhap 0 de thoat khoi chuong trinh.")
             self.view_courses()
             choice = int(input("Chon ID mon hoc: "))
             for i in self.courses:
                 if choice == i.get("id"):
+                    os.system(self.clear_command)
                     print(f"ID mon hoc ban chon la: {choice}\nMon: {i.get('name')}")
                     yourCourse = i
                     isAble = True
                     input("Nhan Enter de tiep tuc...")
                     break
-                elif choice == 0:
-                    break
-                else:
-                    print("ID mon hoc khong hop le.")
-                    input("\nNhan Enter de tiep tuc...")
+            if choice == 0:
+                print("Exiting...")
+                break
+                
+            elif not isAble:
+                os.system(self.clear_command)
+                print("ID mon hoc khong hop le.")
+                input("\nNhan Enter de tiep tuc...")
             
             if isAble:
                 self.get_class_plan(yourCourse)
@@ -95,10 +102,10 @@ class LMS:
             }
         )
         if response.status_code == 200:
-            print(response.text)
             response_data = response.json()
             data = response_data.get("data")
             while True:
+                os.system(self.clear_command)
                 print("Nhap 0 de exit")
                 print(f"So luong tuan hoc la {response_data.get('count')}, vui long chon tuan hoc ban muon: ")
                 week = int(input("Nhap tuan hoc: "))
@@ -107,8 +114,10 @@ class LMS:
                     break
                 elif 1 <= week <= response_data.get("count"):
                     print(data[week-1])
+                    input("\nNhan Enter de tiep tuc...")
                 else:
                     print("Tuan hoc khong hop le, vui long nhap lai.")
+                    input("\nNhan Enter de tiep tuc...")
 
         else:
             print(f"Error fetching class plan: {response.status_code} - {response.text}")

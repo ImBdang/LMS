@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from .crc32 import return_signature
 import os
+import json
 import getpass
 import requests
 
@@ -8,6 +9,7 @@ import requests
 class Login: 
     def __init__(self):
         load_dotenv()
+        self.TOKEN_FILE = os.getenv("TOKEN_FILE")
         self.url_login = os.getenv("login-url")
         self.x_app_id = os.getenv("x-app-id")
         self.domain = os.getenv("domain")
@@ -70,6 +72,8 @@ class Login:
                         "access_token": access_token,
                         "refresh_token": refresh_token
                     }
+                    with open(self.TOKEN_FILE, "w") as token_file:
+                        json.dump(token, token_file, indent=4)
                     return token
                 else:
                     print("Not found tokens in response")
@@ -80,5 +84,44 @@ class Login:
                 print(f'Response: {response_data.get("message")}')
                 if response_data.get("message") == "Wrong password.":
                     print("Tai khoan hoac mat khau khong dung, vui long nhap lai\n")
+
+    def checkTokens(self, tokens):
+        access_token = tokens.get("access_token")
+        refresh_token = tokens.get("refresh_token")
+        if not access_token or not refresh_token:
+            print("Tokens are incomplete, please login again.")
+            return False
+        head = {
+            "Accept": "application/json, text/plain, */*",
+            "Accept-Encoding": "gzip, deflate, br, zstd",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Authorization": "Bearer " + access_token, 
+            "Content-Type": "application/json",
+            "Host": self.host,
+            "Origin": self.domain,
+            "Referer": self.domain + "/",
+            "Sec-Ch-Ua": self.sec_ch_ua,
+            "Sec-Ch-Ua-Mobile": self.sec_ch_ua_mobile,
+            "Sec-Ch-Ua-Platform": self.sec_ch_ua_platform,
+            "Sec-Fetch-Dest": self.sec_fetch_dest,
+            "Sec-Fetch-Mode": self.sec_fetch_mode,
+            "Sec-Fetch-Site": self.sec_fetch_site,
+            "User-Agent": self.user_agent,
+            "X-App-Id": self.x_app_id,
+            "X-Request-Signature": return_signature(
+                method="GET",
+                body={}
+            )
+        }
+        url = os.getenv("profile-url")
+        response = requests.get(
+            url=url,
+            headers=head
+        )
+        if response.status_code == 200:
+            print("token hop le")
+            print(response.json())
+            return True
+        return False
         
 
