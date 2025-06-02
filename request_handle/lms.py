@@ -23,7 +23,6 @@ class LMS:
         self.user_agent = os.getenv("user-agent")
         self.head = {
             "Accept": "application/json, text/plain, */*",
-            # "Accept-Encoding": "gzip, deflate, br, zstd",
             "Accept-Language": "en-US,en;q=0.9",
             "Authorization": "Bearer " + self.user.access_token, 
             "Host": self.host,

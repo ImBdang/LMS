@@ -9,7 +9,6 @@ import requests
 class Login: 
     def __init__(self):
         load_dotenv()
-        self.TOKEN_FILE = os.getenv("TOKEN_FILE")
         self.url_login = os.getenv("login-url")
         self.x_app_id = os.getenv("x-app-id")
         self.domain = os.getenv("domain")
@@ -41,7 +40,7 @@ class Login:
             "X-Request-Signature": ""
         }
     
-    def login(self):
+    def login(self, token_path):
         while True:
             self.username = input("Tai khoan: ")
             self.password = getpass.getpass("Mat khau: ")
@@ -72,7 +71,7 @@ class Login:
                         "access_token": access_token,
                         "refresh_token": refresh_token
                     }
-                    with open(self.TOKEN_FILE, "w") as token_file:
+                    with open(token_path, "w") as token_file:
                         json.dump(token, token_file, indent=4)
                     return token
                 else:
